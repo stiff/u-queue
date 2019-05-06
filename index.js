@@ -1,21 +1,21 @@
 
-const VERSION = '1.0.0';
+const VERSION = '1.1.0';
 
 const sleep = (timeout) => new Promise((resolve) => setTimeout(resolve, timeout));
 
 const queueFactory = () => {
   var queueImpl = Promise.resolve();
   return (fx) => {
-    queueImpl = queueImpl.then(fx);
+    queueImpl = queueImpl.then(fx, fx);
     return queueImpl;
   }
 };
 
 const throttlingQueueFactory = ({ delay }) => {
-  var queueImpl = Promise.resolve();
+  const queueImpl = queueFactory();
   return (fx) => {
-    const res = queueImpl.then(fx);
-    queueImpl = res.then(() => sleep(delay));
+    const res = queueImpl(fx);
+    queueImpl(() => sleep(delay));
     return res;
   }
 };

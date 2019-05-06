@@ -1,6 +1,6 @@
 {
   "name": "u-queue",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Micro promise-based queues",
   "main": "index.js",
   "scripts": {
