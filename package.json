@@ -1,0 +1,23 @@
+{
+  "name": "u-queue",
+  "version": "1.0.0",
+  "description": "Micro promise-based queues",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stiff/u-queue.git"
+  },
+  "keywords": [
+    "promise",
+    "queue"
+  ],
+  "author": "Vladimir Meremyanin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stiff/u-queue/issues"
+  },
+  "homepage": "https://github.com/stiff/u-queue#readme"
+}
