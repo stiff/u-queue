@@ -1,10 +1,10 @@
 
-const VERSION = '1.1.0';
+const VERSION = '1.3.0';
 
 const sleep = (timeout) => new Promise((resolve) => setTimeout(resolve, timeout));
 
 const queueFactory = () => {
-  var queueImpl = Promise.resolve();
+  let queueImpl = Promise.resolve();
   return (fx) => {
     queueImpl = queueImpl.then(fx, fx);
     return queueImpl;
@@ -12,7 +12,7 @@ const queueFactory = () => {
 };
 
 const throttlingQueueFactory = ({ delay }) => {
-  const queueImpl = queueFactory();
+  let queueImpl = queueFactory();
   return (fx) => {
     const res = queueImpl(fx);
     queueImpl(() => sleep(delay));
@@ -20,8 +20,20 @@ const throttlingQueueFactory = ({ delay }) => {
   }
 };
 
+const singleInstance = (fx) => {
+  let instance;
+  return (...args) => {
+    if (!instance) {
+      instance = fx(...args);
+      instance.then(() => instance = null, () => instance = null);
+    }
+    return instance;
+  }
+}
+
 module.exports = {
   queueFactory,
+  singleInstance,
   sleep,
   throttlingQueueFactory,
   VERSION

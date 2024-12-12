@@ -9,7 +9,7 @@ Small collection of promise-based queues used in several projects.
 ## Usage
 
 ```js
-const { queueFactory, sleep, throttlingQueueFactory } = require('u-queue');
+const { queueFactory, singleInstance, sleep, throttlingQueueFactory } = require('u-queue');
 ```
 
 ### queueFactory
@@ -26,8 +26,8 @@ const longProcesses = [
 ];
 
 Promise.all(longProcesses).then(console.log);
-// Promise {<pending>}
-// => [1, 2, 3]
+// Promise {<pending>}
+// => [1, 2, 3]
 ```
 
 ### throttlingQueueFactory
@@ -41,10 +41,26 @@ queue(() => console.log(new Date()));
 queue(() => console.log(new Date()));
 queue(() => console.log(new Date()));
 
-// Promise {<pending>}
+// Promise {<pending>}
 // 11:16:27
 // 11:16:28
 // 11:16:29
+```
+
+### singleInstance
+
+Decorator around async function to run it only once at a time and reuse results for subsequent calls while it's running even if invoked with different arguments.
+
+```js
+let start = Date.now();
+const f = singleInstance(async (tag) => {
+  await sleep(1000);
+  return [ tag, Date.now() - start ];
+});
+console.log(await Promise.all([f(1), f(2), f(3), f(4)]));
+// [ [ 1, 1001 ], [ 1, 1001 ], [ 1, 1001 ], [ 1, 1001 ] ]
+console.log(await Promise.all([f(1), f(2), f(3), f(4)]));
+// [ [ 1, 2002 ], [ 1, 2002 ], [ 1, 2002 ], [ 1, 2002 ] ]
 ```
 
 ### sleep
@@ -52,5 +68,5 @@ queue(() => console.log(new Date()));
 Creates promise that is resolved after specified milliseconds. Used internally by `throttlingQueueFactory`, but may be useful somewhere else as well.
 
 ```js
-sleep(3141);
+sleep(3141).then(console.log);
 ```
